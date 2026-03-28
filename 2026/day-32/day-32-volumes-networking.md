@@ -273,7 +273,7 @@ Custom bridge networks have **built-in DNS** for container name resolution.
 
 # Task 6 – Put It Together (App + Database)
 
-![Two Tier Flask App](./two-tier-flask-app/)
+[Two Tier Flask App](./two-tier-flask-app/)
 
 ## Step 1: Create Network
 
