@@ -13,7 +13,7 @@ Today we built a **production-like multi-container application** using Docker Co
 * Custom Networks
 * Scaling
 
-We used the [**Flask Todo App**](./todo-app) and modified it to work with PostgreSQL and Redis instead of SQLite. 
+Used the [**Flask Todo App**](./todo-app) and modified it to work with PostgreSQL and Redis instead of SQLite. 
 
 ---
 
