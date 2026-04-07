@@ -1,0 +1,56 @@
+services:
+  web:
+    build: .
+    container_name: flask_app
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_NAME: todo_db
+      DB_USER: postgres
+      DB_PASS: postgres
+      REDIS_HOST: redis
+    networks:
+      - app_network
+    labels:
+      - "project=todo-app"
+      - "service=web"
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: todo_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "project=todo-app"
+      - "service=db"
+
+  redis:
+    image: redis:7
+    container_name: redis_cache
+    networks:
+      - app_network
+    labels:
+      - "project=todo-app"
+      - "service=redis"
+
+volumes:
+  postgres_data:
+
+networks:
+  app_network:
