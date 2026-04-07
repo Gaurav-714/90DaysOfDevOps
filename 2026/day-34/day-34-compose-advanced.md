@@ -25,7 +25,7 @@ Used the [**Flask Todo App**](./todo-app) and modified it to work with PostgreSQ
 
 ## Dockerfile (Flask App)
 
-Create `app/Dockerfile` - [Dockerfile](./todo-app/Dockerfile)
+Create `app/Dockerfile` - [Docker File](./todo-app/Dockerfile)
 
 ```dockerfile
 FROM python:3.11-slim
@@ -46,7 +46,7 @@ CMD ["python", "app.py"]
 
 # docker-compose.yml
 
-Create `app/docker-compose.yml` - [Dockerfile](./todo-app/docker-compose.yml)
+Create `app/docker-compose.yml` - [Docker Compose File](./todo-app/docker-compose.yml)
 
 ```yaml
 services:
