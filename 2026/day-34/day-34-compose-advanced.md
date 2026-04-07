@@ -52,9 +52,11 @@ Create `app/docker-compose.yml` - [Docker Compose File](./todo-app/docker-compos
 services:
   web:
     build: .
-    container_name: flask_app
+    #container_name: flask_app
+    #ports:
+    #  - "5000:5000"
     ports:
-      - "5000:5000"
+      - "5000"
     depends_on:
       db:
         condition: service_healthy
@@ -72,7 +74,7 @@ services:
 
   db:
     image: postgres:15
-    container_name: postgres_db
+    #container_name: postgres_db
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -93,7 +95,7 @@ services:
 
   redis:
     image: redis:7
-    container_name: redis_cache
+    #container_name: redis_cache
     networks:
       - app_network
     labels:
@@ -216,6 +218,8 @@ In production, scaling is handled using:
 * Load Balancer
 * Kubernetes
 * Docker Swarm
+
+![snapshot](./images/scaling-error.png)
 
 ---
 
