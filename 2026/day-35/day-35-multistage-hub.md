@@ -1,5 +1,4 @@
 # Day 35 – Multi-Stage Builds & Docker Hub
-Production-ready simple Node.js app using multi-stage Docker builds.
 
 ## Objective
 
@@ -14,17 +13,17 @@ Learn how to:
 
 # Task 1: Problem with Large Images
 
-## React + Node.js App (Basic Setup)
+## Simple Node.js App (Basic Setup)
 
 ```
-react-node-app/
+simple-nodejs-app/
  ├── backend/
  │    ├── server.js
  │    ├── package.json
  ├── frontend/
- │    ├── package.json
- │    ├── src/
- │    ├── build/   (generated after build)
+ │    ├── index.html
+ │   
+ ├── Dockerfile.multistage
  ├── Dockerfile.single
 ```
 
@@ -39,10 +38,8 @@ WORKDIR /app
 
 COPY . .
 
-# Install frontend deps and build
+# Install frontend deps 
 WORKDIR /app/frontend
-RUN npm install
-RUN npm run build
 
 # Install backend deps
 WORKDIR /app/backend
@@ -65,7 +62,7 @@ docker images
 Example Output:
 
 ```
-react-node-single   1.0GB+
+nodejs-single   1.0GB+
 ```
 
 ![snapshot](./images/nodejs-single-size.png)
@@ -73,7 +70,6 @@ react-node-single   1.0GB+
 ---
 
 ## Problems
-![snapshot](./images/nodejs-single-size.png)
 
 * Includes **node_modules twice**
 * Contains **build tools not needed at runtime**
@@ -92,11 +88,8 @@ FROM node:18 AS builder
 
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
-RUN npm install
 
 COPY frontend/ .
-RUN npm run build
-
 
 # ---------- Stage 2: Production ----------
 FROM node:18-alpine
@@ -106,17 +99,20 @@ WORKDIR /app
 # Create non-root user
 RUN addgroup app && adduser -S -G app app
 
-# Copy backend
-COPY backend/package*.json ./backend/
-RUN cd backend && npm install --only=production
+# Go directly into backend folder
+WORKDIR /app/backend
 
-# Copy built frontend from builder
-COPY --from=builder /app/frontend/build ./frontend/build
+# Copy package files FIRST
+COPY backend/package*.json ./
+
+# Install dependencies 
+RUN npm install --omit=dev
 
 # Copy backend source
-COPY backend/ ./backend/
+COPY backend/ .
 
-WORKDIR /app/backend
+# Copy frontend build (if applicable)
+COPY --from=builder /app/frontend ../frontend
 
 USER app
 
