@@ -1,0 +1,16 @@
+FROM node:18
+
+WORKDIR /app
+
+COPY . .
+
+# Install frontend deps 
+WORKDIR /app/frontend
+
+# Install backend deps
+WORKDIR /app/backend
+RUN npm install
+
+EXPOSE 5000
+
+CMD ["node", "server.js"]

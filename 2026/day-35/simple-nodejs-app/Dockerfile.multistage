@@ -1,0 +1,36 @@
+# ---------- Stage 1: Build Frontend ----------
+FROM node:18 AS builder
+
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+
+COPY frontend/ .
+
+# ---------- Stage 2: Production ----------
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup app && adduser -S -G app app
+
+# Go directly into backend folder
+WORKDIR /app/backend
+
+# Copy package files FIRST
+COPY backend/package*.json ./
+
+# Install dependencies 
+RUN npm install --omit=dev
+
+# Copy backend source
+COPY backend/ .
+
+# Copy frontend build (if applicable)
+COPY --from=builder /app/frontend ../frontend
+
+USER app
+
+EXPOSE 5000
+
+CMD ["node", "server.js"]
